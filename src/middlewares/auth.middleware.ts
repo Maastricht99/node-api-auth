@@ -2,7 +2,7 @@ import { Response, NextFunction } from "express";
 import { IUserRequest, IToken } from "../interfaces/interfaces";
 import { validateAccessToken } from "../helpers/JWT.validation";
 import { JwtPayload } from "jsonwebtoken";
-import { getUserById } from "../models/user.model";
+import { getUserById } from "../models/auth.model";
 
 export const authenticate = async (
   req: IUserRequest, 

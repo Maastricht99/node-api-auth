@@ -6,7 +6,7 @@ import { generateAccessToken,
   validateRefreshToken } from "../helpers/JWT.validation";
 import { comparePassword, hashPassword } from "../helpers/password.hashing";
 import { IUserRequest, IToken, IUser } from "../interfaces/interfaces";
-import { createNewUser, getUserByEmail, setUserVerified } from "../models/user.model";
+import { createNewUser, getUserByEmail, setUserVerified } from "../models/auth.model";
 import { sendVerificationEmail } from "../services/email.service";
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
