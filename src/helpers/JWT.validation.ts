@@ -3,7 +3,7 @@ import config from "../config/config";
 
 const generateToken = (secret: string, expiresIn: string) => {
   return (id: string) => {
-    return jwt.sign(id, secret, { expiresIn });
+    return jwt.sign(id, secret, { expiresIn } );
   }
 }
 

@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 
+import router from "./routes/auth.route";
 import db from "./db/db";
 import config from "./config/config";
 
@@ -9,6 +10,9 @@ const app: Application = express();
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Routes
+app.use(router);
 
 // Db connection and server start
 db.connect()
