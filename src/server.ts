@@ -1,7 +1,8 @@
 import express, { Application } from "express";
 import cors from "cors";
 
-import router from "./routes/auth.route";
+import authRouter from "./routes/auth.route";
+import testRouter from "./routes/test.route";
 import db from "./db/db";
 import config from "./config/config";
 
@@ -12,7 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use(router);
+app.use(authRouter);
+app.use(testRouter);
 
 // Db connection and server start
 db.connect()
