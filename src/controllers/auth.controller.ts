@@ -8,6 +8,7 @@ import { comparePassword, hashPassword } from "../helpers/password.hashing";
 import { IUserRequest, IToken, IUser } from "../interfaces/interfaces";
 import { createNewUser, getUserByEmail, setUserVerified } from "../models/auth.model";
 import { sendVerificationEmail } from "../services/email.service";
+import { retrieveTokenFromMemory, saveTokenInMemory } from "../redis/redis.client";
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
@@ -24,6 +25,8 @@ export const register = async (req: Request, res: Response): Promise<Response> =
     // Generate access and refresh token
     const accessToken = generateAccessToken(newUser.id!);
     const refreshToken = generateRefreshToken(newUser.id!);
+    // Save refresh token in redis client with id as key
+    await saveTokenInMemory(newUser.id!, refreshToken);
     // Remove password from user and return
     newUser.password = "";
     return res.status(201).json({
@@ -55,6 +58,8 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     // If credentials valid, generate tokens
     const accessToken = generateAccessToken(user.id!);
     const refreshToken = generateRefreshToken(user.id!);
+    // Save refresh token in redis client with id as key
+    await saveTokenInMemory(user.id!, refreshToken);
     // Remove password and return
     user.password = "";
     return res.status(200).json({
@@ -77,9 +82,18 @@ export const refresh = async (req: Request, res: Response): Promise<Response> =>
     if (!id) {
       return res.status(401).json({ error: "Unauthorized." });
     }
+    // Search for refresh token in memory
+    const tokenInMemory = await retrieveTokenFromMemory(id);
+    // If no token, return error
+    if (!tokenInMemory) {
+      return res.status(401).json({ error: "Unauthorized." });
+    }
     // Generate and return new accessToken and refreshToken
     const accessToken = generateAccessToken(id);
     const newRefreshToken = generateRefreshToken(id);
+    // Save refresh token in redis client with id as key
+    await saveTokenInMemory(id, newRefreshToken);
+    // Return response
     return res.status(200).json({
       accessToken, 
       refreshToken: newRefreshToken
