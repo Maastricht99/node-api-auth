@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { generateAccessToken, generateRefreshToken } from "../helpers/JWT.validation";
+import { JwtPayload } from "jsonwebtoken";
+import { generateAccessToken, generateRefreshToken, validateRefreshToken } from "../helpers/JWT.validation";
 import { comparePassword, hashPassword } from "../helpers/password.hashing";
-import { IUser } from "../interfaces/interfaces";
+import { IToken, IUser } from "../interfaces/interfaces";
 import { createNewUser, getUserByEmail } from "../models/user.model";
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
@@ -57,6 +58,27 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
       user,
       accessToken,
       refreshToken
+    })
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+const refresh = async (req: Request, res: Response): Promise<Response> => {
+  const { refreshToken } = req.body;
+  try {
+    // Validate refresh token and get id from payload
+    const { id }: JwtPayload = validateRefreshToken(refreshToken) as IToken;
+    // If no id, return error
+    if (!id) {
+      return res.status(401).json({ error: "Unauthorized." });
+    }
+    // Generate and return new accessToken and refreshToken
+    const accessToken = generateAccessToken(id);
+    const newRefreshToken = generateRefreshToken(id);
+    return res.status(200).json({
+      accessToken, 
+      refreshToken: newRefreshToken
     })
   } catch (err: any) {
     return res.status(500).json({ error: err.message });
