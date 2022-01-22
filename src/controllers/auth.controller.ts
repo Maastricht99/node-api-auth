@@ -54,7 +54,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
     // Remove password and return
     user.password = "";
     return res.status(200).json({
-      message: "User uccesfully logged in.",
+      message: "User succesfully logged in.",
       user,
       accessToken,
       refreshToken

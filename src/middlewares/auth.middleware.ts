@@ -15,7 +15,7 @@ export const authenticate = async (
       const token = authHeaders && authHeaders.split(" ")[1];
       // If no token, user not authorized
       if (!token) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ error: "Unauthorized." });
       }
       // If token, get id from payload
       const { id }: JwtPayload = validateAccessToken(token) as IToken;
@@ -23,7 +23,7 @@ export const authenticate = async (
       const user = await getUserById(id);
       // If no user, return error
       if (!user) {
-        return res.status(401).json({ error: "Unauthorized" });
+        return res.status(401).json({ error: "Unauthorized." });
       }
       // If user, remove pwd and add to req body
       user.password = "";
