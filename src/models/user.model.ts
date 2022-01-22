@@ -29,3 +29,10 @@ export const createNewUser = async (email: string, password: string): Promise<IU
   return user; 
 }
 
+export const setUserVerified = async (id: string): Promise<void> => {
+  const queryStr = 
+  `ALTER TABLE users SET verified = TRUE
+  WHERE id = $1;`;
+  await db.query(queryStr, [ id ]);
+}
+

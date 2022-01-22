@@ -38,11 +38,22 @@ const refreshToken = {
   expiry: REFRESH_TOKEN_EXPIRY
 }
 
+const EMAIL_SERVICE = process.env.EMAIL_SERVICE!;
+const EMAIL_USER = process.env.EMAIL_USER!;
+const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD!;
+
+const email = {
+  service: EMAIL_SERVICE,
+  user: EMAIL_USER,
+  password: EMAIL_PASSWORD
+}
+
 const config = {
   server,
   database,
   accessToken,
-  refreshToken
+  refreshToken,
+  email
 }
 
 export default config;

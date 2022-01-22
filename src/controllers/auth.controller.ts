@@ -1,9 +1,13 @@
 import { Request, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
-import { generateAccessToken, generateRefreshToken, validateRefreshToken } from "../helpers/JWT.validation";
+import { generateAccessToken, 
+  validateAccessToken, 
+  generateRefreshToken, 
+  validateRefreshToken } from "../helpers/JWT.validation";
 import { comparePassword, hashPassword } from "../helpers/password.hashing";
-import { IToken, IUser } from "../interfaces/interfaces";
-import { createNewUser, getUserByEmail } from "../models/user.model";
+import { IUserRequest, IToken, IUser } from "../interfaces/interfaces";
+import { createNewUser, getUserByEmail, setUserVerified } from "../models/user.model";
+import { sendVerificationEmail } from "../services/email.service";
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
@@ -64,7 +68,7 @@ export const login = async (req: Request, res: Response): Promise<Response> => {
   }
 }
 
-const refresh = async (req: Request, res: Response): Promise<Response> => {
+export const refresh = async (req: Request, res: Response): Promise<Response> => {
   const { refreshToken } = req.body;
   try {
     // Validate refresh token and get id from payload
@@ -81,6 +85,39 @@ const refresh = async (req: Request, res: Response): Promise<Response> => {
       refreshToken: newRefreshToken
     })
   } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+// Needs authentication
+export const verifyEmail = async (req: IUserRequest, res: Response): Promise<Response> => {
+  const { id, email } = req.user!;
+  try {
+    // Create token to verify email
+    const token = generateAccessToken(id!);
+    // Send email with token
+    await sendVerificationEmail(email, token);
+    // Return response
+    return res.status(201).json({ message: "Email succesfully sent." });
+  } catch(err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+export const verifyEmailToken = async (req: Request, res: Response): Promise<Response> => {
+  const { token } = req.params;
+  try {
+    // Get id from token
+    const { id }: JwtPayload = validateAccessToken(token) as IToken;
+    // If no id token not valid, return error
+    if (!id) {
+      return res.status(401).json({ error: "Unauthorized." });
+    }
+    // If id token valid, update user in db
+    await setUserVerified(id);
+    // return response
+    return res.status(200).json({ message: "Email succesfully verified."});
+  } catch(err: any) {
     return res.status(500).json({ error: err.message });
   }
 }
