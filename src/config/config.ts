@@ -22,6 +22,14 @@ const database = {
   password: DATABASE_PASSWORD
 }
 
+const REDIS_HOST = process.env.REDIS_HOST!;
+const REDIS_PORT = +process.env.REDIS_PORT!;
+
+const redis = {
+  host: REDIS_HOST,
+  port: REDIS_PORT
+}
+
 const ACCESS_TOKEN_SECRET = process.env.ACCESS_TOKEN_SECRET!;
 const ACCESS_TOKEN_EXPIRY = process.env.ACCESS_TOKEN_EXPIRY!;
 
@@ -51,6 +59,7 @@ const email = {
 const config = {
   server,
   database,
+  redis,
   accessToken,
   refreshToken,
   email

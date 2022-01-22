@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, refresh, verifyEmail, verifyEmailToken } from "../controllers/auth.controller";
+import { login, register, refresh, verifyEmail, verifyEmailToken, logout } from "../controllers/auth.controller";
 import { authenticate } from "../middlewares/auth.middleware";
 
 const router = Router();
@@ -7,6 +7,7 @@ const router = Router();
 // Authentication
 router.post("/register", register);
 router.post("/login", login);
+router.get("/logout", authenticate, logout);
 
 // Email verification
 router.get("/verify", authenticate, verifyEmail);

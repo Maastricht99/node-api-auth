@@ -8,7 +8,7 @@ import { comparePassword, hashPassword } from "../helpers/password.hashing";
 import { IUserRequest, IToken, IUser } from "../interfaces/interfaces";
 import { createNewUser, getUserByEmail, setUserVerified } from "../models/auth.model";
 import { sendVerificationEmail } from "../services/email.service";
-import { retrieveTokenFromMemory, saveTokenInMemory } from "../redis/redis.client";
+import { deleteTokenFromMemory, retrieveTokenFromMemory, saveTokenInMemory } from "../redis/redis.client";
 
 export const register = async (req: Request, res: Response): Promise<Response> => {
   const { email, password } = req.body;
@@ -131,6 +131,19 @@ export const verifyEmailToken = async (req: Request, res: Response): Promise<Res
     await setUserVerified(id);
     // return response
     return res.status(200).json({ message: "Email succesfully verified."});
+  } catch(err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+}
+
+export const logout = async (req: IUserRequest, res: Response): Promise<Response> => {
+  const { id } = req.user!;
+  try {
+    // Delete refresh token from memory
+    await deleteTokenFromMemory(id!);
+    return res.status(200).json({
+      message: "Succesfully logged out."
+    })
   } catch(err: any) {
     return res.status(500).json({ error: err.message });
   }

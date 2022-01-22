@@ -1,31 +1,32 @@
 import { createClient } from "redis";
-import util from "util";
+import config from "../config/config";
 
-const redisClient = createClient();
+const connectionString = `redis://${config.redis.host}:${config.redis.port}`;
 
-// Redis client by default only supports callbacks
-const retrieveFromMemory = util.promisify(redisClient.get).bind(redisClient);
-const saveInMemory = util.promisify(redisClient.set).bind(redisClient);
-const deleteFromMemory = util.promisify(redisClient.del).bind(redisClient);
+const redisClient = createClient({
+  url: connectionString
+});
+
 
 export const retrieveTokenFromMemory = async (
   key: string
 ): Promise<string|null> => {
-  const token = await retrieveFromMemory(key);
+  const token = await redisClient.get(key.toString());
   return token;
 }
 
 export const saveTokenInMemory = async (
   key: string, value: string
 ): Promise<void> => {
-  await saveInMemory(key, value);;
+  await redisClient.set(key.toString(), value);;
 }
 
 export const deleteTokenFromMemory = async (
   key: string
 ): Promise<void> => {
-  await deleteFromMemory(key);
+  await redisClient.del(key.toString());
 }
 
+export default redisClient;
 
 
