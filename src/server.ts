@@ -17,7 +17,6 @@ app.use(express.json());
 app.use(authRouter);
 app.use(testRouter);
 
-
 const runApplication = async () => {
   await db.connect()
   .then(() => console.log(`Postgres database connected on ${config.database.host}:${config.database.port}.`))

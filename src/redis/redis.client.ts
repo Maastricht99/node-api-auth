@@ -7,7 +7,6 @@ const redisClient = createClient({
   url: connectionString
 });
 
-
 export const retrieveTokenFromMemory = async (
   key: string
 ): Promise<string|null> => {

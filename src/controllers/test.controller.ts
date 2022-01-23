@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { IUserRequest } from "../interfaces/interfaces";
 
+
 export const servePublic = async (
   req: Request, res: Response
 ): Promise<Response> => {
@@ -25,7 +26,6 @@ export const servePrivate = async (
     return res.status(500).json({ error: err.message });
   }
 }
-
 
 export const servePrivateVerified = async (
   req: IUserRequest, res: Response

@@ -2,7 +2,6 @@ import nodemailer from "nodemailer";
 import config from "../config/config";
 import util from "util";
 
-
 const transporter = nodemailer.createTransport({
   service: config.email.service,
   auth: {
