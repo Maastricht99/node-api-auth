@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { IUserRequest } from "../interfaces/interfaces";
 
-
 export const servePublic = async (
   req: Request, res: Response
 ): Promise<Response> => {
