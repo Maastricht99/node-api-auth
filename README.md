@@ -5,6 +5,6 @@ The trickiest passages of the authentication flow are explained in detail throug
 ## Teck Stack
 The API runs on NodeJS and is entirely written in Typescript, PostgreSQL is the DBMS and Redis has been used to store whitelisted tokens in memory.
 
-## TODO
+## Next
 - Add more detailed error handling and logging.
 - Possibly add Swagger for documentation.
