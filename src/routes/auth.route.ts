@@ -7,10 +7,10 @@ const router = Router();
 // Authentication
 router.post("/register", register);
 router.post("/login", login);
-router.get("/logout", authenticate, logout);
+router.delete("/logout", authenticate, logout);
 
 // Email verification
-router.get("/verify", authenticate, verifyEmail);
+router.put("/verify", authenticate, verifyEmail);
 router.get("/verify/:token", verifyEmailToken);
 
 // Refresh token
